@@ -72,7 +72,7 @@ To run this project locally, follow these steps:
 ### 1. Backend Setup
 1.  Clone the repo:
     ```bash
-    git clone [https://github.com/yourusername/SmartShelfX.git](https://github.com/yourusername/SmartShelfX.git)
+    git clone [https://github.com/Krshm10/SmartShelfX-Infosys.git]
     ```
 2.  Navigate to the backend folder and configure `application.properties` with your MySQL credentials.
 3.  Run the application:
