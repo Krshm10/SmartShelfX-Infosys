@@ -1,7 +1,6 @@
 package com.ai.inventoryapplication.Service;
 
 import com.ai.inventoryapplication.DTO.PONumberGenerator;
-import com.ai.inventoryapplication.DTO.TransactionCodeGenerator;
 import com.ai.inventoryapplication.Entity.*;
 import com.ai.inventoryapplication.Repository.ProductRepository;
 import com.ai.inventoryapplication.Repository.PurchaseOrderRepository;
@@ -41,7 +40,7 @@ public class PurchaseOrderService {
         po.setProduct(product);
         po.setVendor(vendor);
         po.setQuantity(quantity);
-        po.setRate(product.getCurrentPrice());   // buying price snapshot
+        po.setRate(product.getCurrentPrice());   // 🔥 snapshot of buying price
         po.setStatus(PurchaseOrderStatus.PENDING);
         po.setCreatedAt(LocalDateTime.now());
 
@@ -103,15 +102,14 @@ public class PurchaseOrderService {
         product.setCurrentStock(product.getCurrentStock() + po.getQuantity());
         productRepo.save(product);
 
-        // 2️⃣ Create Stock IN Transaction ✅ FULLY FIXED
+        // 2️⃣ Create Stock IN Transaction (linked to PO number)
         StockTransaction tx = new StockTransaction();
-        tx.setTransactionRef(po.getPoNumber());                         // PO-XXXX
-        tx.setTransactionCode(TransactionCodeGenerator.generateIO());  // ✅ MUST
+        tx.setTransactionRef(po.getPoNumber());     // 🔥 PO number
         tx.setProductId(product.getId());
         tx.setQuantity(po.getQuantity());
         tx.setType(TransactionType.IN);
         tx.setRate(po.getRate());
-        tx.setTransactionValue(po.getRate() * po.getQuantity());
+        tx.setTransactionValue(po.getTotalAmount());
         tx.setHandledBy(po.getVendor().getId());
         tx.setTimestamp(LocalDateTime.now());
 

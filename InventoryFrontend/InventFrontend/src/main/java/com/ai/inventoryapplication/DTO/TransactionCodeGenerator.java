@@ -1,5 +1,7 @@
 package com.ai.inventoryapplication.DTO;
 
+
+
 import java.util.UUID;
 
 public class TransactionCodeGenerator {

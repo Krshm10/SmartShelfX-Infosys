@@ -12,3 +12,7 @@ export const stockOut = (productId, quantity, userId) =>
 
 export const getTransactions = () =>
   axios.get("/stock/transactions");
+
+// 🔥 SALES ANALYTICS
+export const getProductWiseTotalSale = () =>
+  axios.get("/analytics/product-sales");

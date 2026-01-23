@@ -69,6 +69,17 @@ const UserReport = () => {
           </div>
 
           <div className="flex gap-3 items-center">
+            {/* 🔥 ROLE DROPDOWN */}
+            <select
+              value={selectedRole}
+              onChange={(e) => setSelectedRole(e.target.value)}
+              className="border rounded-lg px-3 py-2 bg-white"
+            >
+              <option value="ALL">All Roles</option>
+              <option value="ADMIN">Admin</option>
+              <option value="MANAGER">Manager</option>
+              <option value="VENDOR">Vendor</option>
+            </select>
 
             <button
               onClick={returnBack}

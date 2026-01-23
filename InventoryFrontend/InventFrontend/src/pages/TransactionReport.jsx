@@ -19,22 +19,18 @@ const TransactionReport = () => {
         setRole(r);
 
         const txRes = await getTransactions();
-
-        // Only STOCK OUT
-        const stockOutTx = (txRes.data || []).filter(
-          (t) => t.type === "OUT"
-        );
-
-        setTransactions(stockOutTx);
+        const stockOut = (txRes.data || []).filter(t => t.type === "OUT");
+        setTransactions(stockOut);
 
         const prodRes = await getAllProducts();
         const map = {};
-        (prodRes.data || []).forEach((p) => {
-          map[String(p.id)] = p.name;
+        (prodRes.data || []).forEach(p => {
+          map[String(p.id)] = p;
         });
         setProductMap(map);
+
       } catch (e) {
-        console.error(e);
+        console.error("API ERROR", e);
       } finally {
         setLoading(false);
       }
@@ -50,30 +46,28 @@ const TransactionReport = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 px-6 py-10">
-      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow border">
+    <div className="min-h-screen bg-slate-100 p-6">
+      <div className="max-w-7xl mx-auto bg-white shadow rounded">
 
         <div className="flex justify-between items-center p-4 border-b">
           <div>
-            <h2 className="text-xl font-bold">Stock Issue (Sales)</h2>
-            <p className="text-sm text-slate-500">
-              Only Stock OUT (IO) transactions
-            </p>
+            <h2 className="text-xl font-bold">📦 Stock Issue Report</h2>
+            <p className="text-sm text-gray-500">Stock OUT Transactions</p>
           </div>
-
           <button
             onClick={goBack}
-            className="border px-4 py-2 rounded bg-white"
+            className="px-4 py-2 border rounded hover:bg-gray-100"
           >
             ← Back
           </button>
         </div>
 
         <table className="w-full text-sm">
-          <thead className="bg-slate-50 border-b">
+          <thead className="bg-gray-100">
             <tr>
               <th className="p-3">IO No</th>
-              <th className="p-3">Product</th>
+              <th className="p-3">Product ID</th>
+              <th className="p-3">Product Name</th>
               <th className="p-3">Qty</th>
               <th className="p-3">Rate</th>
               <th className="p-3">Total</th>
@@ -82,40 +76,43 @@ const TransactionReport = () => {
             </tr>
           </thead>
 
-          <tbody className="divide-y">
+          <tbody>
             {loading ? (
               <tr>
-                <td colSpan={7} className="text-center py-10">
+                <td colSpan="8" className="text-center p-10">
                   Loading...
                 </td>
               </tr>
             ) : transactions.length === 0 ? (
               <tr>
-                <td colSpan={7} className="text-center py-10">
-                  No Stock OUT transactions
+                <td colSpan="8" className="text-center p-10 text-gray-500">
+                  No Stock OUT records
                 </td>
               </tr>
             ) : (
-              transactions.map((t) => (
-                <tr key={t.id}>
-                  {/* 🔥 IO Code instead of numeric id */}
-                  <td className="p-3 font-mono text-indigo-700">
+              transactions.map(t => (
+                <tr key={t.id} className="border-t hover:bg-gray-50">
+                  <td className="p-3 font-mono text-blue-600">
                     {t.transactionCode || "IO-NA"}
                   </td>
 
+                  <td className="p-3">{t.productId}</td>
+
                   <td className="p-3 font-semibold">
-                    {productMap[String(t.productId)] || "Unknown"}
+                    {productMap[String(t.productId)]?.name || "Unknown"}
                   </td>
 
                   <td className="p-3">{t.quantity}</td>
 
                   <td className="p-3">₹ {t.rate}</td>
 
-                  <td className="p-3 font-semibold text-emerald-700">
+                  <td className="p-3 font-bold text-green-600">
                     ₹ {t.transactionValue}
                   </td>
 
-                  <td className="p-3">{t.handledBy}</td>
+                  <td className="p-3">
+                    User-{t.handledBy}
+                  </td>
 
                   <td className="p-3">
                     {new Date(t.timestamp).toLocaleString()}

@@ -1,66 +1,74 @@
 import React from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 
-/* ---------- NAVBARS & FOOTERS ---------- */
+/* ===================== NAVBARS & FOOTERS ===================== */
 import NavbarAuth from "./components/Navbarauth";
 import FooterAuth from "./components/FooterAuth";
 import NavbarDashboard from "./components/NavbarDashboard";
 import FooterDashboard from "./components/FooterDashboard";
 
-/* ---------- AUTH ---------- */
+/* ===================== AUTH ===================== */
 import LoginPage from "./pages/LoginPage";
 import RegisterUser from "./pages/RegisterUser";
 
-/* ---------- DASHBOARDS ---------- */
+/* ===================== DASHBOARDS ===================== */
 import AdminMenu from "./pages/AdminMenu";
 import ManagerMenu from "./pages/ManagerMenu";
 import VendorMenu from "./pages/VendorMenu";
 
-/* ---------- PRODUCTS ---------- */
+/* ===================== PRODUCTS ===================== */
 import ProductEntry from "./pages/ProductEntry";
 import ProductReport from "./pages/ProductReport";
 import VendorProductReport from "./pages/VendorProductReport";
 import UpdateProduct from "./pages/UpdateProduct";
 import UpdatePurchasePrice from "./pages/UpdatePurchasePrice";
 
-/* ---------- SKU ---------- */
+/* ===================== SKU ===================== */
 import SKUEntry from "./pages/SKUEntry";
 import SKUReport from "./pages/SKUReport";
 import UpdateSKU from "./pages/UpdateSKU";
 
-/* ---------- STOCK ---------- */
+/* ===================== STOCK ===================== */
 import StockOut from "./pages/StockOut";
 import TransactionReport from "./pages/TransactionReport";
 
-/* ---------- USERS ---------- */
+/* ===================== USERS ===================== */
 import UserReport from "./pages/UserReport";
 
-/* ---------- PURCHASE ORDERS ---------- */
+/* ===================== PURCHASE ORDERS ===================== */
 import VendorPurchaseOrders from "./pages/VendorPurchaseOrder";
 import AllPurchaseOrders from "./pages/AllPurchaseOrders";
 import EditPurchaseOrder from "./pages/EditPurchaseOrder";
+import CreatePurchaseOrder from "./pages/CreatePurchaseOrder";
 
-/* ---------- PROTECTION ---------- */
+/* ===================== ANALYTICS ===================== */
+import ProductPieAnalysis from "./pages/ProductPieAnalysis";
+
+/* ===================== SECURITY ===================== */
 import ProtectedRoute from "./components/ProtectedRoute";
+
+/* ============================================================= */
 
 const App = () => {
   const location = useLocation();
 
   const isAuth =
-    location.pathname === "/" || location.pathname === "/register";
+    location.pathname === "/" ||
+    location.pathname === "/register";
 
   return (
     <>
-      {/* NAVBAR */}
+      {/* ===================== TOP NAVBAR ===================== */}
       {isAuth ? <NavbarAuth /> : <NavbarDashboard />}
 
+      {/* ===================== ROUTING ===================== */}
       <Routes>
 
-        {/* ---------- AUTH ---------- */}
+        {/* ===================== AUTH ===================== */}
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterUser />} />
 
-        {/* ---------- DASHBOARDS ---------- */}
+        {/* ===================== DASHBOARDS ===================== */}
         <Route
           path="/admin"
           element={
@@ -88,7 +96,7 @@ const App = () => {
           }
         />
 
-        {/* ---------- USERS ---------- */}
+        {/* ===================== USERS ===================== */}
         <Route
           path="/users"
           element={
@@ -98,7 +106,7 @@ const App = () => {
           }
         />
 
-        {/* ---------- PRODUCTS ---------- */}
+        {/* ===================== PRODUCTS ===================== */}
         <Route
           path="/product"
           element={
@@ -144,7 +152,7 @@ const App = () => {
           }
         />
 
-        {/* ---------- SKU ---------- */}
+        {/* ===================== SKU ===================== */}
         <Route
           path="/sku"
           element={
@@ -172,7 +180,7 @@ const App = () => {
           }
         />
 
-        {/* ---------- STOCK ---------- */}
+        {/* ===================== STOCK ===================== */}
         <Route
           path="/transaction"
           element={
@@ -191,7 +199,16 @@ const App = () => {
           }
         />
 
-        {/* ---------- PURCHASE ORDERS ---------- */}
+        {/* ===================== PURCHASE ORDERS ===================== */}
+        <Route
+          path="/po/create"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "MANAGER"]}>
+              <CreatePurchaseOrder />
+            </ProtectedRoute>
+          }
+        />
+
         <Route
           path="/po"
           element={
@@ -210,7 +227,6 @@ const App = () => {
           }
         />
 
-        {/* ---------- VENDOR PURCHASE ORDERS ---------- */}
         <Route
           path="/vendor/po"
           element={
@@ -220,9 +236,22 @@ const App = () => {
           }
         />
 
+        {/* ===================== 📊 SALES ANALYTICS ===================== */}
+        <Route
+          path="/analytics/product-sales"
+          element={
+            <ProtectedRoute allowedRoles={["ADMIN", "MANAGER"]}>
+              <ProductPieAnalysis />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ===================== FALLBACK ===================== */}
+        <Route path="*" element={<Navigate to="/" />} />
+
       </Routes>
 
-      {/* FOOTER */}
+      {/* ===================== FOOTER ===================== */}
       {isAuth ? <FooterAuth /> : <FooterDashboard />}
     </>
   );
